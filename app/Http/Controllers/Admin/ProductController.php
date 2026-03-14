@@ -29,7 +29,6 @@ class ProductController extends Controller
 
         $product = Product::create($data);
 
-        // OBJETIVO: Registro en tabla intermediaria muchos a muchos
         if ($request->has('categories')) {
             $product->categories()->attach($request->categories);
         }
@@ -50,7 +49,6 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        // OBJETIVO: Sincronizar relación muchos a muchos
         if ($request->has('categories')) {
             $product->categories()->sync($request->categories);
         }
