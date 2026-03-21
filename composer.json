@@ -80,6 +80,10 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "audit": {
+            "abandoned": "ignore",
+            "ignore": ["PKSA-jyd3-2srm-pfqd"]
         }
     },
     "minimum-stability": "stable",
