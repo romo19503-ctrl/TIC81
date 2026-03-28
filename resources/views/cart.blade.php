@@ -29,10 +29,10 @@
             </tbody>
         </table>
 
-        <div class="mt-3">
-            <h3>Total: ${{ Cart::getTotal() }}</h3>
-            <a href="{{ route('home') }}" class="btn btn-secondary">Seguir comprando</a>
-            <button class="btn btn-success">Finalizar Compra</button>
-        </div>
+        <h3>Total: ${{ \Cart::getTotal() }}</h3>
+        <h3>Total: ${{ Cart::getTotal() }}</h3>
+        <a href="{{ route('home') }}" class="btn btn-secondary">Seguir comprando</a>
+        <button class="btn btn-success">Finalizar Compra</button>
+    </div>
     </div>
 @endsection
