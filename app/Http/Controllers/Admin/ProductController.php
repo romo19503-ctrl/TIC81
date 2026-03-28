@@ -12,7 +12,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('categories')->get();
+        // Forzamos la carga de productos con sus categorías
+        // Si sigue sin salir nada, cambia 'get()' por 'all()' para probar
+        $products = Product::with('categories')->latest()->get();
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -24,6 +27,12 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Validación básica (buena práctica de TIC)
+        $request->validate([
+            'name' => 'required|max:255',
+            'price' => 'required|numeric',
+        ]);
+
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
 
@@ -33,7 +42,7 @@ class ProductController extends Controller
             $product->categories()->attach($request->categories);
         }
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.products.index')->with('success', 'Producto creado');
     }
 
     public function edit(Product $product)
@@ -56,12 +65,18 @@ class ProductController extends Controller
             $product->categories()->detach();
         }
 
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.products.index')->with('success', 'Producto actualizado');
     }
 
     public function destroy(Product $product)
     {
+        // 1. Limpiamos relaciones en la tabla intermedia (importante)
+        $product->categories()->detach();
+
+        // 2. Borramos el producto
         $product->delete();
-        return back();
+
+        // 3. Redirigimos al index con un mensaje de sesión
+        return redirect()->route('admin.products.index')->with('eliminar', 'ok');
     }
 }
