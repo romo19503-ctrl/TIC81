@@ -22,14 +22,16 @@
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-                        {{ __('🛒 Carrito') }}
-                        <span class="ms-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                            {{ \Cart::getTotalQuantity() }}
-                        </span>
-                    </x-nav-link>
-                </div>
+                @if(!request()->routeIs('admin.*') && !request()->routeIs('dashboard'))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
+                            {{ __('🛒 Carrito') }}
+                            <span class="ms-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {{ \Cart::getTotalQuantity() }}
+                            </span>
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -50,6 +52,10 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('home')">
+                            {{ __('Volver a la Tienda') }}
+                        </x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -86,9 +92,11 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-                {{ __('🛒 Carrito') }} ({{ \Cart::getTotalQuantity() }})
-            </x-responsive-nav-link>
+            @if(!request()->routeIs('admin.*') && !request()->routeIs('dashboard'))
+                <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
+                    {{ __('🛒 Carrito') }} ({{ \Cart::getTotalQuantity() }})
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
