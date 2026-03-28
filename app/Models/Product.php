@@ -2,26 +2,33 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'price', 'description', 'slug'];
+    use HasFactory;
 
-    // ESTO ES LO QUE FALTA:
+
+    protected $fillable = ['name', 'price', 'description', 'slug', 'image'];
+
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
 
-    // Opcional: Esto ayuda a que el slug se genere solo
+
+
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($product) {
-            $product->slug = Str::slug($product->name);
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+            }
         });
     }
 }
