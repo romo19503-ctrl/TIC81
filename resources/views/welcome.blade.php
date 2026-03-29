@@ -50,7 +50,7 @@
                         </form>
                     @else
                         <a href="{{ route('login') }}"
-                            class="text-xs font-bold uppercase hover:text-yellow-400 transition">Entrar</a>
+                            class="text-xs font-bold uppercase hover:text-yellow-400 transition text-white">Entrar</a>
                     @endauth
                 </div>
             </div>
@@ -65,11 +65,18 @@
             </div>
         @endif
 
+        @if(session()->has('error'))
+            <div
+                class="mb-8 bg-red-500/20 border border-red-500 text-red-500 px-4 py-3 rounded-xl text-center font-bold uppercase text-xs tracking-widest">
+                {{ session()->get('error') }}
+            </div>
+        @endif
+
         <header class="text-center mb-16">
             <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">
                 Lleva tu <span class="text-yellow-400">Rendimiento</span> al Límite
             </h1>
-            <p class="text-gray-400 max-w-2xl mx-auto font-medium">
+            <p class="text-gray-400 max-w-2xl mx-auto font-medium italic">
                 Suplementación de grado profesional para atletas de alto nivel. Proyecto TIC81 - Andres Garcia
             </p>
         </header>
@@ -77,14 +84,31 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @forelse($products as $product)
                 <div
-                    class="group bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-yellow-400/50 transition-all duration-300 flex flex-col shadow-2xl">
+                    class="group bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-yellow-400/50 transition-all duration-300 flex flex-col shadow-2xl relative">
+
+                    {{-- Badge de Agotado --}}
+                    @if($product->stock <= 0)
+                        <div
+                            class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-bl-lg z-10 uppercase tracking-tighter">
+                            Agotado
+                        </div>
+                    @endif
+
                     <div
                         class="h-48 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center relative overflow-hidden">
-                        <span class="text-gray-700 font-black text-6xl uppercase opacity-20 select-none">FUEL</span>
+                        @if($product->image)
+                            <img src="{{ $product->image }}"
+                                class="w-full h-full object-contain p-4 group-hover:scale-110 transition duration-500"
+                                alt="{{ $product->name }}">
+                        @else
+                            <span
+                                class="text-gray-700 font-black text-6xl uppercase opacity-20 select-none tracking-tighter italic">FUEL</span>
+                        @endif
+
                         <div class="absolute top-3 left-3 flex flex-wrap gap-1">
                             @foreach ($product->categories as $cat)
                                 <span
-                                    class="bg-yellow-400 text-black text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">
+                                    class="bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded uppercase italic">
                                     {{ $cat->name }}
                                 </span>
                             @endforeach
@@ -92,51 +116,70 @@
                     </div>
 
                     <div class="p-6 flex flex-col flex-grow">
-                        <h3 class="text-lg font-black uppercase leading-tight mb-2 group-hover:text-yellow-400 transition">
-                            {{ $product->name }}
-                        </h3>
-                        <p class="text-gray-500 text-xs line-clamp-2 mb-4 italic">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-black uppercase leading-tight group-hover:text-yellow-400 transition">
+                                {{ $product->name }}
+                            </h3>
+                        </div>
+
+                        <p class="text-gray-500 text-xs line-clamp-2 mb-4 italic leading-relaxed">
                             {{ $product->description ?? 'Sin descripción disponible para este suplemento.' }}
                         </p>
 
-                        <div class="mt-auto pt-4 border-t border-gray-800 flex justify-between items-center">
-                            <div>
-                                <span class="block text-[10px] uppercase font-bold text-gray-500">Precio</span>
+                        <div class="mb-4">
+                            <span class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Stock
+                                Disponible</span>
+                            <div class="flex items-center gap-2">
+                                <div class="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full {{ $product->stock > 5 ? 'bg-green-500' : 'bg-red-500' }}"
+                                        style="width: {{ min(($product->stock * 10), 100) }}%"></div>
+                                </div>
                                 <span
-                                    class="text-2xl font-black text-white font-mono">${{ number_format($product->price, 2) }}</span>
+                                    class="text-xs font-black {{ $product->stock > 0 ? 'text-white' : 'text-red-500' }}">{{ $product->stock }}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-t border-gray-800 flex justify-between items-center gap-4">
+                            <div>
+                                <span class="block text-[9px] uppercase font-bold text-gray-500 italic">Precio Neto</span>
+                                <span
+                                    class="text-xl font-black text-white font-mono tracking-tighter">${{ number_format($product->price, 2) }}</span>
                             </div>
 
-                            <form action="{{ route('cart.add') }}" method="POST">
+                            <form action="{{ route('cart.add') }}" method="POST" class="flex-grow">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $product->id }}">
                                 <input type="hidden" name="name" value="{{ $product->name }}">
                                 <input type="hidden" name="price" value="{{ $product->price }}">
-                                <input type="hidden" name="quantity" value="1">
-
-                                {{-- CAMPOS ADICIONALES PARA EL CARRITO --}}
                                 <input type="hidden" name="image" value="{{ $product->image }}">
                                 <input type="hidden" name="description" value="{{ $product->description }}">
                                 <input type="hidden" name="stock" value="{{ $product->stock }}">
 
-                                <button type="submit"
-                                    class="bg-white text-black px-4 py-2 rounded-lg text-xs font-black uppercase hover:bg-yellow-400 transition-colors">
-                                    Comprar
-                                </button>
+                                @if($product->stock > 0)
+                                    <button type="submit"
+                                        class="w-full bg-white text-black px-4 py-2 rounded-lg text-xs font-black uppercase hover:bg-yellow-400 transition-all transform active:scale-95 shadow-lg">
+                                        Agregar
+                                    </button>
+                                @else
+                                    <button type="button" disabled
+                                        class="w-full bg-gray-800 text-gray-600 px-4 py-2 rounded-lg text-xs font-black uppercase cursor-not-allowed italic">
+                                        Sin Stock
+                                    </button>
+                                @endif
                             </form>
                         </div>
                     </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-20 bg-gray-900 rounded-3xl border border-dashed border-gray-700">
-                    <p class="text-gray-500 font-bold uppercase tracking-widest text-lg">No hay stock disponible en este
-                        momento.</p>
+                    <p class="text-gray-500 font-bold uppercase tracking-widest text-lg">Próximamente más productos...</p>
                 </div>
             @endforelse
         </div>
     </div>
 
-    <footer class="py-10 text-center text-gray-600 text-[10px] uppercase tracking-[0.2em]">
-        &copy; 2026 PowerGym | TIC81
+    <footer class="py-10 text-center text-gray-600 text-[10px] uppercase tracking-[0.3em] font-bold">
+        &copy; 2026 PowerGym | Andres Garcia | TIC81
     </footer>
 
 </body>
