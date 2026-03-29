@@ -15,19 +15,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
+    // 1. RUTAS DE ADMINISTRADOR (Solo estas piden ser Admin)
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('products', ProductController::class);
     });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    // 2. RUTAS DEL CARRITO (Fuera de 'admin', para que cualquier usuario entre)
     Route::get('/cart', [CartController::class, 'cartList'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+    // 3. Perfil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__ . '/auth.php';
