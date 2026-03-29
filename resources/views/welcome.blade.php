@@ -111,8 +111,12 @@
                                 <input type="hidden" name="id" value="{{ $product->id }}">
                                 <input type="hidden" name="name" value="{{ $product->name }}">
                                 <input type="hidden" name="price" value="{{ $product->price }}">
-                                <input type="hidden" name="img" value="{{ $product->image }}">
                                 <input type="hidden" name="quantity" value="1">
+
+                                {{-- CAMPOS ADICIONALES PARA EL CARRITO --}}
+                                <input type="hidden" name="image" value="{{ $product->image }}">
+                                <input type="hidden" name="description" value="{{ $product->description }}">
+                                <input type="hidden" name="stock" value="{{ $product->stock }}">
 
                                 <button type="submit"
                                     class="bg-white text-black px-4 py-2 rounded-lg text-xs font-black uppercase hover:bg-yellow-400 transition-colors">
