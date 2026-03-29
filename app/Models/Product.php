@@ -11,12 +11,14 @@ class Product extends Model
 {
     use HasFactory;
 
+    // Se añadió 'stock' a la lista para permitir que se guarde en la BD
+    protected $fillable = ['name', 'price', 'description', 'slug', 'image', 'stock'];
 
-    protected $fillable = ['name', 'price', 'description', 'slug', 'image'];
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
+
     protected static function boot()
     {
         parent::boot();
@@ -26,7 +28,6 @@ class Product extends Model
                 $product->slug = Str::slug($product->name);
             }
         });
-
 
         static::updating(function ($product) {
             if ($product->isDirty('name')) {
