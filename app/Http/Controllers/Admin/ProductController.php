@@ -10,36 +10,26 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    /**
-     * Muestra el inventario de suplementos.
-     */
     public function index()
     {
-        // Cargamos productos con sus categorías usando Eager Loading para evitar errores en el @foreach
         $products = Product::with('categories')->latest()->get();
-
         return view('admin.products.index', compact('products'));
     }
 
-    /**
-     * Muestra el formulario para añadir un nuevo suplemento.
-     */
     public function create()
     {
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
 
-    /**
-     * Guarda el nuevo producto en la base de datos.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|max:255',
             'price' => 'required|numeric',
+            'stock' => 'required|integer|min:0', // Validamos el stock
             'description' => 'nullable',
-            'image' => 'nullable' // Aquí puedes validar si es URL o archivo
+            'image' => 'nullable'
         ]);
 
         $data = $request->all();
@@ -47,7 +37,6 @@ class ProductController extends Controller
 
         $product = Product::create($data);
 
-        // Sincroniza las categorías seleccionadas en el checkbox/select múltiple
         if ($request->has('categories')) {
             $product->categories()->attach($request->categories);
         }
@@ -56,30 +45,24 @@ class ProductController extends Controller
             ->with('success', '¡Suplemento añadido al stock exitosamente!');
     }
 
-    /**
-     * Muestra el formulario de edición.
-     */
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-
-
-
     public function update(Request $request, Product $product)
     {
         $request->validate([
             'name' => 'required|max:255',
             'price' => 'required|numeric',
+            'stock' => 'required|integer|min:0', // Validamos el stock aquí también
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
 
         $product->update($data);
-
 
         if ($request->has('categories')) {
             $product->categories()->sync($request->categories);
@@ -91,16 +74,10 @@ class ProductController extends Controller
             ->with('success', 'Información del producto actualizada correctamente.');
     }
 
-
-
     public function destroy(Product $product)
     {
-
         $product->categories()->detach();
-
-
         $product->delete();
-
 
         return redirect()->route('admin.products.index')
             ->with('success', 'El producto ha sido retirado del inventario.');
