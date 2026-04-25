@@ -16,9 +16,9 @@
                         <div class="col-md-8 mb-4">
                             <label class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest">Nombre del
                                 Producto</label>
-                            {{-- Cambiado a bg-white y text-dark para visibilidad --}}
+                            {{-- Cambiado a bg-white y text-black para visibilidad total --}}
                             <input type="text" name="name"
-                                class="form-control bg-white text-dark border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400"
+                                class="form-control bg-white text-black border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400"
                                 placeholder="Ej. Whey Protein Isolate" required>
                         </div>
 
@@ -26,7 +26,7 @@
                             <label class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest">Precio
                                 ($)</label>
                             <input type="number" step="0.01" name="price"
-                                class="form-control bg-white text-dark border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400 font-mono"
+                                class="form-control bg-white text-black border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400 font-mono"
                                 placeholder="0.00" required>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                                 class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest italic text-white">Stock
                                 Inicial</label>
                             <input type="number" name="stock"
-                                class="form-control bg-white text-dark border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400 font-mono"
+                                class="form-control bg-white text-black border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400 font-mono"
                                 value="0" min="0" required>
                             <div class="form-text text-gray-400 text-[10px] mt-1 italic uppercase font-bold">Cantidad
                                 disponible para venta inmediata.</div>
@@ -48,7 +48,7 @@
                                 class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest italic text-white">URL
                                 de la Imagen</label>
                             <input type="text" name="image"
-                                class="form-control bg-white text-dark border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400"
+                                class="form-control bg-white text-black border-0 py-3 px-4 rounded-xl shadow-inner focus:ring-2 focus:ring-yellow-400"
                                 placeholder="https://link-de-la-foto.jpg">
                             <div class="form-text text-gray-400 text-[10px] mt-1 italic uppercase font-bold">Pega el enlace
                                 directo de la imagen.</div>
@@ -60,10 +60,10 @@
                             class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest italic">Categorías
                             (Ctrl + Clic)</label>
                         <select name="categories[]"
-                            class="form-select bg-white text-dark border-0 rounded-xl focus:ring-2 focus:ring-yellow-400"
+                            class="form-select bg-white text-black border-0 rounded-xl focus:ring-2 focus:ring-yellow-400"
                             multiple style="height: 100px;" required>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" class="text-black">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -72,7 +72,7 @@
                         <label
                             class="form-label fw-bold text-yellow-400 uppercase text-xs tracking-widest italic">Descripción</label>
                         <textarea name="description"
-                            class="form-control bg-white text-dark border-0 rounded-xl py-3 px-4 focus:ring-2 focus:ring-yellow-400"
+                            class="form-control bg-white text-black border-0 rounded-xl py-3 px-4 focus:ring-2 focus:ring-yellow-400"
                             rows="3" placeholder="Escribe los beneficios o ingredientes..."></textarea>
                     </div>
 

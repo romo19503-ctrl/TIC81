@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product; // Importamos el modelo para que el código sea más limpio
 
 class CartController extends Controller
 {
@@ -14,7 +15,7 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-        $product = \App\Models\Product::find($request->id);
+        $product = Product::find($request->id);
 
         if ($product->stock <= 0) {
             return redirect()->back()->with('error', 'Lo sentimos, este producto está agotado.');
@@ -37,7 +38,7 @@ class CartController extends Controller
 
     public function update(Request $request)
     {
-        $product = \App\Models\Product::find($request->id);
+        $product = Product::find($request->id);
 
         if ($request->quantity > $product->stock) {
             return redirect()->back()->with('error', 'No puedes agregar más del stock disponible.');
@@ -65,27 +66,29 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'El carrito se ha vaciado.');
     }
 
-    public function processOrder()
+
+    public function checkout()
     {
         $cartItems = \Cart::getContent();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->back()->with('error', 'El carrito está vacío.');
+            return redirect()->route('cart.index')->with('error', 'El carrito está vacío.');
         }
 
         foreach ($cartItems as $item) {
-            $product = \App\Models\Product::find($item->id);
+            $product = Product::find($item->id);
             if ($product->stock < $item->quantity) {
                 return redirect()->back()->with('error', "El producto {$product->name} ya no tiene stock suficiente.");
             }
         }
 
+
         foreach ($cartItems as $item) {
-            $product = \App\Models\Product::find($item->id);
+            $product = Product::find($item->id);
             $product->decrement('stock', $item->quantity);
         }
 
         \Cart::clear();
-        return redirect()->route('home')->with('success', '¡Compra procesada con éxito! Tu stock ha sido actualizado.');
+        return redirect()->route('home')->with('success', '¡Compra procesada con éxito en PowerGym! El stock ha sido actualizado.');
     }
 }
